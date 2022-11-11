@@ -8,7 +8,7 @@ app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
-const uri = "mongodb+srv://user:8QAf48dwELaa0LqM@cluster0.v0q5o0h.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.v0q5o0h.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
@@ -20,6 +20,14 @@ async function run() {
         app.get('/allservices', async (req, res) => {
             const query = {};
             const cursor = serviceCollection.find(query);
+            const users = await cursor.toArray();
+            res.send(users);
+        })
+
+        // 3 services data
+        app.get('/3services', async (req, res) => {
+            const query = {};
+            const cursor = serviceCollection.find(query).limit(3);
             const users = await cursor.toArray();
             res.send(users);
         })
@@ -39,11 +47,11 @@ run().catch(error => (console.log(error)))
 
 
 app.get('/', (req, res) => {
-    res.send('HMAS-food server!')
+    res.send('Execusion!')
 })
 
 app.listen(5000, () => {
-    console.log(`HMAS-food-server listening`)
+    console.log(`listening`)
 })
 
 
