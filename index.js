@@ -6,7 +6,7 @@ app.use(cors());
 app.use(express.json());
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const uri = "mongodb+srv://user:8QAf48dwELaa0LqM@cluster0.v0q5o0h.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -15,12 +15,21 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const serviceCollection = client.db('excursion').collection('allservices')
-        console.log(serviceCollection.find({}).toArray());
+
+        // All services data
         app.get('/allservices', async (req, res) => {
             const query = {};
-            const cursor = await serviceCollection.find(query);
+            const cursor = serviceCollection.find(query);
             const users = await cursor.toArray();
             res.send(users);
+        })
+
+        // Dynamic service data
+        app.get('/allservices/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const serviceDetails = await serviceCollection.findOne(query);
+            res.send(serviceDetails)
         })
     }
     finally { }
