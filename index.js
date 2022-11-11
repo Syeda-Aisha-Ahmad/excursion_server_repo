@@ -47,7 +47,7 @@ run().catch(error => (console.log(error)))
 
 
 app.get('/', (req, res) => {
-    res.send('Execusion!')
+    res.send('Excursion!')
 })
 
 app.listen(5000, () => {
